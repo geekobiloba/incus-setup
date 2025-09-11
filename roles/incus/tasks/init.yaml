@@ -1,0 +1,45 @@
+# init tasks for incus role
+
+- name: Incus initialization
+  become: true
+  block:
+
+    - name: "Remove BTRFS subvolume: /ext2_saved"
+      community.general.btrfs_subvolume:
+        name:      /ext2_saved
+        state:     absent
+        recursive: true
+
+    - name: Check Incus initialization status
+      changed_when: false
+      shell:
+        executable: /usr/bin/bash
+        cmd: |
+          set -o pipefail
+          incus profile show default | yq '.devices == {}'
+      register: incus_status
+
+    - name: Pre-initialization
+      when:
+        - incus_status.stdout_lines[0] == "true"
+      block:
+
+        - name: Create temporary file
+          tempfile:
+            state: file
+          register: incus_tmpfile
+
+        - name: Create Incus preseed file
+          copy:
+            src:  "{{ incus_preseed_file | default('standalone.yaml') }}"
+            dest: "{{ incus_tmpfile.path }}"
+            mode: "600"
+
+        - name: Initialize Incus
+          command: incus admin init --preseed {{ incus_tmpfile.path }}
+
+        - name: Remove temporary file
+          file:
+            path:  "{{ incus_tmpfile.path }}"
+            state: absent
+

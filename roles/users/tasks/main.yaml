@@ -1,0 +1,21 @@
+# main tasks for users role
+
+- name: Import adduser tasks
+  tags:
+    - adduser
+    - useradd
+    - users
+    - user
+  import_tasks:
+    file: adduser.yaml
+
+- name: Import deluser tasks
+  tags:
+    - deluser
+    - userdel
+    - users
+    - user
+    - never
+  import_tasks:
+    file: deluser.yaml
+

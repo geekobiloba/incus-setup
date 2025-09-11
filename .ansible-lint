@@ -1,0 +1,10 @@
+---
+skip_list:
+  - fqcn[action-core]
+  - name[casing]
+  - yaml[colons]
+  - yaml[comments]
+  - yaml[document-start]
+  - yaml[empty-lines]
+
+# vim: ft=yaml:

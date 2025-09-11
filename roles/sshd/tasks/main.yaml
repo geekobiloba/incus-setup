@@ -1,0 +1,29 @@
+# main tasks for ssh role
+
+- name: SSH server setup
+  tags:
+    - sshd
+    - ssh
+  become: true
+  block:
+
+    - name: Prepare /etc/ssh/sshd_config.d/ directory
+      file:
+        path:  /etc/ssh/sshd_config.d/
+        mode:  '755'
+        state: directory
+
+    - name: Install SSH server config
+      copy:
+        src:  sshd.conf
+        dest: /etc/ssh/sshd_config.d/00-sshd.conf
+        mode: '644'
+        validate: sshd -t -f %s
+      notify: restart_sshd
+
+    - name: Start and enable SSH service
+      service:
+        name:    sshd
+        state:   started
+        enabled: true
+

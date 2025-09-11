@@ -1,0 +1,12 @@
+# main tasks for timezone role
+
+- name: Set timezone
+  tags:
+    - timezone
+    - tz
+  when:
+    - timezone is defined
+  become: true
+  community.general.timezone:
+    name: '{{ timezone }}'
+

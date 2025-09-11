@@ -1,0 +1,9 @@
+# kernel tasks for pkg role
+
+- name: Install the latest kernel
+  become: true
+  apt:
+    name: linux-generic-hwe-{{ ansible_distribution_version }}
+    install_recommends: true
+  notify: reboot_target
+

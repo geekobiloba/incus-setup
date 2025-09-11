@@ -1,0 +1,42 @@
+- name: Incus server setup for Debian/Ubuntu
+  hosts: all
+  tasks:
+    - name: Flush handlers
+      meta: flush_handlers
+  roles:
+
+    - role: sudo
+      tags:
+        - sudo
+
+    - role: basic
+      tags:
+        - basic
+
+    - role: tmpfs
+      when:
+        - ansible_os_family == "Debian"
+      tags:
+        - tmpfs
+
+    - role: unsnap
+      when:
+        - ansible_distribution == "Ubuntu"
+      tags:
+        - unsnap
+
+    - role: zram
+      tags:
+        - zram
+        - never
+
+    - role: incus
+      tags:
+        - incus
+        - never
+
+    - role: reboot
+      tags:
+        - reboot
+        - never
+

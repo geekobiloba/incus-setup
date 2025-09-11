@@ -1,0 +1,40 @@
+# main tasks for pkg role
+
+- name: Import APT tasks
+  tags:
+    - pkg
+    - apt
+  when:
+    - ansible_distribution == "Debian"
+  import_tasks:
+    file: apt.yaml
+
+- name: Import upgrade tasks
+  tags:
+    - pkg
+    - upgrade
+  import_tasks:
+    file: upgrade.yaml
+
+- name: Import kernel tasks
+  tags:
+    - pkg
+    - kernel
+  when:
+    - ansible_distribution == "Ubuntu"
+  import_tasks:
+    file: kernel.yaml
+
+- name: Import pkg tasks
+  tags:
+    - pkg
+  import_tasks:
+    file: pkg.yaml
+
+- name: Import editor tasks
+  tags:
+    - pkg
+    - editor
+  import_tasks:
+    file: editor.yaml
+

@@ -1,0 +1,27 @@
+# main tasks for tmpfs role
+
+- name: tmp as tmpfs setup
+  when: >-
+    ansible_distribution == "Ubuntu"
+    or (
+    ansible_distribution == "Debian"
+    and
+    (ansible_distribution_major_version | int) < 13
+    )
+  become: true
+  block:
+
+    - name: Install tmp.mount systemd unit
+      copy:
+        src:  /usr/share/systemd/tmp.mount
+        dest: /etc/systemd/system/
+        mode: "644"
+        remote_src: true
+
+    - name: Start & enable tmp.mount service
+      systemd_service:
+        name:    tmp.mount
+        enabled: true
+        daemon_reload: true
+      notify: reboot_target
+

@@ -1,0 +1,9 @@
+# main tasks for sudo role
+
+- name: Install sudoer config
+  become: true
+  copy:
+    src:  sudoer
+    dest: /etc/sudoers.d/sudo
+    mode: '0440'
+

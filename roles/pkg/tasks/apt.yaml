@@ -1,0 +1,9 @@
+# apt tasks for pkg role
+
+- name: Update Debian /etc/apt/sources.list
+  become: true
+  template:
+    src:  sources.list
+    dest: /etc/apt/sources.list
+    mode: "644"
+

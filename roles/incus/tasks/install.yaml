@@ -1,0 +1,31 @@
+# install tasks for incus role
+
+- name: Incus installation
+  become: true
+  block:
+
+    - name: Incus installation
+      block:
+
+        - name: Install zabbly repo key
+          get_url:
+            url:  https://pkgs.zabbly.com/key.asc
+            dest: /etc/apt/keyrings/zabbly.asc
+            mode: "644"
+
+        - name: Install zabbly repo
+          deb822_repository:
+            name:       Zabbly repo for Incus 6.0 LTS
+            uris:       https://pkgs.zabbly.com/incus/lts-6.0
+            suites:     "{{ ansible_distribution_release }}"
+            signed_by:  /etc/apt/keyrings/zabbly.asc
+            components: main
+
+        - name: Install Incus
+          apt:
+            update_cache: true
+            name:
+              - incus
+              - sqlite3 # for Incus DB: /var/lib/incus/database/local.db
+              - yq
+

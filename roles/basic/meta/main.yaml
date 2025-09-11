@@ -1,0 +1,10 @@
+# meta file for basic role
+
+dependencies:
+  - role: sshd
+  - role: pkg
+  - role: shell
+  - role: users
+  - role: timezone
+  - role: hostname
+

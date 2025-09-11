@@ -1,0 +1,6 @@
+# handlers for ssh role
+
+- name: Reboot target
+  become: true
+  listen: reboot_target
+  reboot:

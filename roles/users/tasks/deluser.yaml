@@ -1,0 +1,15 @@
+# deluser tasks for users role
+
+- name: Delete users
+  when:
+    - users is defined
+    - users.delete is defined
+    - users.delete | length > 0
+  become: true
+  user:
+    name:   '{{ item }}'
+    state:  absent
+    force:  true
+    remove: true
+  loop: '{{ users.delete }}'
+

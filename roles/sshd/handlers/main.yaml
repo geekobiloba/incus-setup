@@ -1,0 +1,9 @@
+# handlers for ssh role
+
+- name: Restart SSH service
+  become: true
+  listen: restart_sshd
+  service:
+    name:  sshd
+    state: restarted
+

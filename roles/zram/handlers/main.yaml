@@ -1,0 +1,9 @@
+# main handlers for zram role
+
+- name: Turn off all swap
+  become: true
+  listen: swapoff
+  command: swapoff -a
+  register: zram_swapoff
+  changed_when: zram_swapoff.rc == 0
+

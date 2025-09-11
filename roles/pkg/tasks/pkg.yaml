@@ -1,0 +1,43 @@
+# pkg tasks for pkg role
+
+- name: Packages setup
+  become: true
+  block:
+
+    - name: Install basic packages
+      when:
+        - pkg_basic.present is defined
+        - pkg_basic.present | length > 0
+      package:
+        name:  '{{ pkg_basic.present }}'
+        state: present
+
+    - name: Uninstall basic packages
+      when:
+        - pkg_basic.absent is defined
+        - pkg_basic.absent | length > 0
+      package:
+        name:  '{{ pkg_basic.absent }}'
+        state: absent
+
+    - name: Additional packages setup
+      when:
+        - pkg is defined
+      block:
+
+        - name: Install additional packages
+          when:
+            - pkg.present is defined
+            - pkg.present | length > 0
+          package:
+            name:  '{{ pkg.present }}'
+            state: present
+
+        - name: Uninstall additional packages
+          when:
+            - pkg.absent is defined
+            - pkg.absent | length > 0
+          package:
+            name:  '{{ pkg.absent }}'
+            state: absent
+
