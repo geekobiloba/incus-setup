@@ -1,0 +1,11 @@
+# upgrade tasks for pkg role
+
+- name: Upgrade packages
+  become: true
+  apt:
+    purge: true
+    upgrade: full
+    autoremove: true
+    update_cache: true
+  notify: reboot_target
+

@@ -1,0 +1,50 @@
+# main tasks for hostname role
+
+- name: Hostname setup
+  tags:
+    - hostname
+  when:
+    - hostname is defined
+  become: true
+  block:
+
+    - name: Set hostname
+      hostname:
+        use:  systemd
+        name: '{{ hostname }}'
+
+    - name: Add hostname to /etc/hosts
+      when: false
+      blockinfile:
+        path:   /etc/hosts
+        mode:   '644'
+        append_newline:  true
+        prepend_newline: true
+        block: |
+          ::1        {{ hostname }}  {{ hostname | split(".") | first }}
+          127.0.1.1  {{ hostname }}  {{ hostname | split(".") | first }}
+
+    - name: /etc/hosts setup
+      when:
+        - etc_hosts is defined
+      block:
+
+        - name: Add additional entries from /etc/hosts
+          when:
+            - etc_hosts.present is defined
+          lineinfile:
+            path: /etc/hosts
+            line: '{{ item }}'
+          loop: '{{ etc_hosts.present }}'
+
+
+        - name: Remove unwanted entries from /etc/hosts
+          when:
+            - etc_hosts.absent is defined
+          lineinfile:
+            path:   /etc/hosts
+            state:  absent
+            regexp: '{{ item }}'
+          loop: '{{ etc_hosts.absent }}'
+
+

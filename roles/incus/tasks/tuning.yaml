@@ -1,0 +1,31 @@
+# tuning tasks for incus role
+
+- name: Incus tuning
+  become: true
+  block:
+
+    - name: Get the minimum value of net.ipv4.tcp_mem
+      changed_when: false
+      shell:
+        executable: /usr/bin/bash
+        cmd: |
+          set -o pipefail
+          sysctl net.ipv4.tcp_mem | awk '{print $3}'
+      register: incus_netdev_max_backlog
+
+    - name: Tune Incus server for production
+      when:
+        - incus_netdev_max_backlog | length == 1
+      ansible.posix.sysctl:
+        key:         net.core.netdev_max_backlog
+        value:       "{{ incus_netdev_max_backlog.stdout_lines[0] }}"
+        sysctl_file: /etc/sysctl.d/50-incus.conf
+      notify: reboot_target
+
+    - name: Install /etc/security/limits.d/99-incus.conf
+      copy:
+        src:  limits.conf
+        dest: /etc/security/limits.d/99-incus.conf
+        mode: "644"
+      notify: reboot_target
+

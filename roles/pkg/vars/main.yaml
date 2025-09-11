@@ -1,0 +1,22 @@
+# main vars for pkg role
+
+pkg_present:
+    - bash-completion
+    - bat
+    - byobu
+    - curl
+    - fd-find
+    - fzf
+    - git
+    - htop
+    - jq
+    - ripgrep
+    - tmux
+
+    - btrfs-progs
+    - command-not-found
+    - iperf3
+    - psmisc
+    - python-is-python3
+    - python3-debian # for Ansible deb822_repository module
+

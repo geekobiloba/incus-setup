@@ -1,0 +1,33 @@
+# editor tasks for pkg role
+
+- name: Editor setup
+  become: true
+  block:
+
+    - name: Install micro & vim-nox
+      apt:
+        name:
+          - micro
+          - vim-nox
+        install_recommends: false
+
+    - name: Set default editor to micro
+      community.general.alternatives:
+        name: editor
+        path: /usr/bin/micro
+
+    - name: vimrc
+      block:
+
+        - name: Prepare /etc/vim/ directory
+          file:
+            path:  /etc/vim/
+            mode:  "755"
+            state: directory
+
+        - name: Install vimrc
+          copy:
+            src:  vimrc
+            dest: /etc/vim/vimrc
+            mode: "644"
+

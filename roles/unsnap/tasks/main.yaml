@@ -1,0 +1,60 @@
+# main tasks for unsnap role
+
+- name: Check snap executable
+  stat:
+    path: /usr/bin/snap
+  register: unsnap_cmd
+
+- name: Remove snapd
+  when:
+    - unsnap_cmd is defined
+    - unsnap_cmd.stat.exists
+    - unsnap_cmd.stat.executable
+  become: true
+  block:
+
+    - name: Get installed snap packages
+      changed_when: false
+      shell:
+        executable: /usr/bin/bash
+        cmd: |
+          set -o pipefail
+          snap list --all |\
+          awk '
+            /No snaps are installed/    { exit } ;
+            $1 !~ /^(Name|core|snapd)$/ { print $1 } ;
+          '
+      register: unsnap_pkg
+
+    - name: Uninstall all snap packages 1/2
+      community.general.snap:
+        name:  "{{ unsnap_pkg.stdout_lines }}"
+        state: absent
+
+    - name: Uninstall all snap packages 2/2
+      when:
+        - unsnap_pkg.stdout_lines | length > 0
+      command: snap remove {{ item }}
+      loop:
+        - core
+        - snapd
+      register: unsnap_uninstall
+      changed_when: unsnap_uninstall.rc == 0
+
+    - name: Uninstall snapd
+      apt:
+        name:  snapd
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Remove snapd leftovers
+      file:
+        path:  "{{ item }}"
+        state: absent
+      loop:
+        - /snap
+        - /var/snap
+        - /var/lib/snapd
+        - /var/cache/snapd
+

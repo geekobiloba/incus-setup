@@ -1,0 +1,25 @@
+# adduser tasks for users role
+
+- name: User creation
+  when:
+    - users is defined
+    - users.create is defined
+    - users.create | length > 0
+  become: true
+  block:
+
+    - name: Create users
+      user:
+        name:    '{{ item.name }}'
+        shell:   /usr/local/bin/bash
+        groups:  '{{ item.groups }}'
+        append:  true
+        comment: '{{ item.fullname }}'
+      loop: '{{ users.create }}'
+
+    - name: Install users' SSH public key
+      ansible.posix.authorized_key:
+        key:  '{{ item.ssh_pubkey | default("") }}'
+        user: '{{ item.name }}'
+      loop: '{{ users.create }}'
+

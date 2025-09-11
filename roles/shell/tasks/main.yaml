@@ -1,0 +1,54 @@
+# main tasks for shell role
+
+- name: Shell setup
+  block:
+
+    - name: Install local bashrc & inputrc
+      become: true
+      copy:
+        src:  "{{ item }}"
+        dest: "/etc/{{ item }}"
+        mode: "644"
+      loop:
+        - "{{ ansible_distribution }}.bashrc"
+        - inputrc.local
+
+    - name: Install bashrc & inputrc for current user & root
+      become: "{{ item.1 }}"
+      blockinfile:
+        path:   "$HOME/{{ item.0.file }}"
+        mode:   "644"
+        block:  "{{ item.0.block }}"
+        create: true
+        append_newline:  true
+        prepend_newline: true
+      loop: "{{ file | product(is_become) | list }}"
+      vars:
+        file:
+          - file: .bashrc
+            block:
+              . /etc/bash.bashrc.local
+          - file: .inputrc
+            block: |
+              $include /etc/inputrc.local
+        is_become:
+          - true
+          - false
+
+    - name: Install bashrc & inputrc for new users
+      become: true
+      blockinfile:
+        path:   "/etc/skel/{{ item.file }}"
+        mode:   "644"
+        block:  "{{ item.block }}"
+        create: true
+        append_newline:  true
+        prepend_newline: true
+      loop:
+        - file: .bashrc
+          block:
+            . /etc/bash.bashrc.local
+        - file: .inputrc
+          block: |
+            $include /etc/inputrc.local
+

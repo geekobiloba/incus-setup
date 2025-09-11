@@ -1,0 +1,6 @@
+# main tasks for reboot role
+
+- name: Reboot hosts
+  become: true
+  reboot:
+

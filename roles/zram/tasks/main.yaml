@@ -1,0 +1,34 @@
+# main tasks for zram role
+
+- name: zram setup
+  when:
+    - zram is defined
+  become: true
+  block:
+
+    - name: Remove swap from /etc/fstab
+      lineinfile:
+        path:   /etc/fstab
+        regexp: '^\s*\S+\s+\S+\s+\S*swap'
+        state:  absent
+      notify: swapoff
+
+    - name: Flush handler
+      meta: flush_handlers
+
+    - name: Remove swap file
+      file:
+        path:  /swap.img
+        state: absent
+
+    - name: Install systemd-zram-generator
+      package:
+        name: systemd-zram-generator
+
+    - name: Install zram config
+      template:
+        src:  zram-generator.conf
+        dest: /etc/systemd/zram-generator.conf
+        mode: "644"
+      notify: reboot_target
+

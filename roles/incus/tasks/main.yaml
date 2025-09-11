@@ -1,0 +1,14 @@
+# main tasks for incus role
+
+- name: Import installation tasks
+  import_tasks:
+    file: install.yaml
+
+- name: Import initialization tasks
+  import_tasks:
+    file: init.yaml
+
+- name: Import tuning tasks
+  import_tasks:
+    file: tuning.yaml
+
