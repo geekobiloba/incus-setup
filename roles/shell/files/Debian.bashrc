@@ -34,6 +34,7 @@ alias  lla="ll"
 alias  llt="ll -t"
 alias  llh="ll -h"
 alias llah="llh"
+alias sudo="sudo "
 alias nano="micro"
 
 # vim:ft=bash:

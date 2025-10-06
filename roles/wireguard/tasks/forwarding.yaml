@@ -1,0 +1,14 @@
+# forwarding tasks for wireguard role
+
+- name: Forwarding setup
+  become: true
+  block:
+
+    - name: Enable IPv4 forwarding
+      ansible.posix.sysctl:
+        name:        net.ipv4.ip_forward
+        value:       1
+        reload:      true
+        sysctl_set:  true
+        sysctl_file: /etc/sysctl.d/99-wireguard.conf
+

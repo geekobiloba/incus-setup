@@ -1,0 +1,12 @@
+# main tasks for wireguard role
+
+- name: Import wireguard tasks
+  import_tasks:
+    file: wireguard.yaml
+
+- name: Import forwarding tasks
+  tags:
+    - forwarding
+  import_tasks:
+    file: forwarding.yaml
+

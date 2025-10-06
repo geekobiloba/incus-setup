@@ -23,7 +23,7 @@
 
     - name: Start and enable SSH service
       service:
-        name:    sshd
+        name:    ssh
         state:   started
         enabled: true
 

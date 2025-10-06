@@ -1,0 +1,9 @@
+# handlers for wireguard role
+
+- name: Reload WireGuard config
+  listen: reload_wg
+  become: true
+  service:
+    name:  wg-quick@wg0
+    state: reloaded
+

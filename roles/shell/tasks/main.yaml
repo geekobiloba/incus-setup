@@ -1,17 +1,19 @@
 # main tasks for shell role
 
 - name: Shell setup
+  tags:
+    - shell
   block:
 
     - name: Install local bashrc & inputrc
       become: true
       copy:
-        src:  "{{ item }}"
-        dest: "/etc/{{ item }}"
-        mode: "644"
+        src:  '{{ item }}'
+        dest: '/etc/{{ item | replace(ansible_distribution, "bash") }}.local'
+        mode: '644'
       loop:
-        - "{{ ansible_distribution }}.bashrc"
-        - inputrc.local
+        - '{{ ansible_distribution }}.bashrc'
+        - inputrc
 
     - name: Install bashrc & inputrc for current user & root
       become: "{{ item.1 }}"

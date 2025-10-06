@@ -35,6 +35,11 @@
         - incus
         - never
 
+    - role: wireguard
+      tags:
+        - wireguard
+        - never
+
     - role: reboot
       tags:
         - reboot

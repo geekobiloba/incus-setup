@@ -1,0 +1,24 @@
+# wireguard tasks for wireguard role
+
+- name: WireGuard setup
+  become: true
+  block:
+
+    - name: Install WireGuard tools
+      package:
+        name:
+          - wireguard-tools
+
+    - name: Install WireGuard config
+      template:
+        src:  wg.conf
+        dest: /etc/wireguard/{{ wireguard.interface | default("wg0") }}.conf
+        mode: '600'
+      notify: reload_wg
+
+    - name: Start and enable WireGuard service
+      service:
+        name:    wg-quick@wg0
+        state:   started
+        enabled: true
+
