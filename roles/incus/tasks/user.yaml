@@ -1,0 +1,16 @@
+# user tasks for incus role
+
+- name: Incus user setup
+  become: true
+  block:
+
+    - name: Get environment as root
+      setup:
+        gather_subset: env
+
+    - name: Add current user to incus-admin group
+      user:
+        name:   '{{ ansible_env.SUDO_USER }}'
+        groups: incus-admin
+        append: true
+

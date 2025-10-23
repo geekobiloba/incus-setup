@@ -8,6 +8,7 @@
     - role: sudo
       tags:
         - sudo
+        - never
 
     - role: basic
       tags:

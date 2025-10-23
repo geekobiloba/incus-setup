@@ -15,8 +15,8 @@
 
         - name: Install zabbly repo
           deb822_repository:
-            name:       Zabbly repo for Incus 6.0 LTS
-            uris:       https://pkgs.zabbly.com/incus/lts-6.0
+            name:       Zabbly repo for Incus stable
+            uris:       https://pkgs.zabbly.com/incus/stable
             suites:     "{{ ansible_distribution_release }}"
             signed_by:  /etc/apt/keyrings/zabbly.asc
             components: main
@@ -27,5 +27,4 @@
             name:
               - incus
               - sqlite3 # for Incus DB: /var/lib/incus/database/local.db
-              - yq
 

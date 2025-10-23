@@ -3,6 +3,7 @@
 - name: Shell setup
   tags:
     - shell
+    - bash
   block:
 
     - name: Install local bashrc & inputrc

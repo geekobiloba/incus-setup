@@ -19,7 +19,7 @@
           incus profile show default | yq '.devices == {}'
       register: incus_status
 
-    - name: Pre-initialization
+    - name: Initialization
       when:
         - incus_status.stdout_lines[0] == "true"
       block:
@@ -30,16 +30,18 @@
           register: incus_tmpfile
 
         - name: Create Incus preseed file
-          copy:
-            src:  "{{ incus_preseed_file | default('standalone.yaml') }}"
-            dest: "{{ incus_tmpfile.path }}"
-            mode: "600"
+          template:
+            src:  '{{ incus_preseed_template | default("clustered.yaml") }}'
+            dest: '{{ incus_tmpfile.path }}'
+            mode: '600'
 
         - name: Initialize Incus
-          command: incus admin init --preseed {{ incus_tmpfile.path }}
+          command:
+            cmd: incus admin init --preseed {{ incus_tmpfile.path }}
+            creates: /var/lib/incus/cluster.key
 
         - name: Remove temporary file
           file:
-            path:  "{{ incus_tmpfile.path }}"
+            path:  '{{ incus_tmpfile.path }}'
             state: absent
 

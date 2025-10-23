@@ -3,7 +3,6 @@
 - name: Set timezone
   tags:
     - timezone
-    - tz
   when:
     - timezone is defined
   become: true

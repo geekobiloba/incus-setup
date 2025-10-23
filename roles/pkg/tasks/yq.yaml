@@ -1,0 +1,80 @@
+# yq tasks for pkg role
+
+- name: Check existing Go yq
+  stat:
+    path: /usr/local/bin/yq
+  register: yq_bin
+
+- name: Install Go yq
+  vars:
+    yq_os:   linux
+    yq_arch: amd64
+  when:
+    - not yq_bin.stat.exists
+  become: true
+  block:
+
+    - name: Get latest yq releease list
+      uri:
+        url: https://api.github.com/repos/mikefarah/yq/releases/latest
+        return_content: true
+      register: yq_release_list
+
+    - name: Get latest yq download URL & checksum
+      set_fact:
+        yq_dl_data: '{{
+            yq_release_list.json |
+            community.general.json_query(query_yq_dl_data)
+          }}'
+      vars:
+        query_yq_dl_data: >
+          assets[?
+          contains(name, '{{ yq_os   }}') &&
+          contains(name, '{{ yq_arch }}') && (
+          ends_with(name, '.tar.gz') || ends_with(name, '.tgz')
+          )
+          ].{
+          url:  browser_download_url,
+          csum: digest
+          }[0]
+
+    - name: Create temporary directory
+      tempfile:
+        state: directory
+      register: tmpdir
+
+    - name: Download Go yq from GitHub release
+      get_url:
+        url:      '{{ yq_dl_data.url }}'
+        dest:     '{{ tmpdir.path }}/yq.tgz'
+        checksum: '{{ yq_dl_data.csum }}'
+
+    - name: Extract Go yq archive
+      unarchive:
+        src:  '{{ tmpdir.path }}/yq.tgz'
+        dest: '{{ tmpdir.path }}'
+        remote_src: true
+
+    - name: Install Go yq to /usr/local/bin/
+      copy:
+        src:  '{{ tmpdir.path }}/yq_{{ yq_os }}_{{ yq_arch }}'
+        dest: /usr/local/bin/yq
+        mode: '0755'
+        remote_src: true
+
+    - name: Ensure /usr/local/share/man/man1/ directory exists
+      file:
+        path:  /usr/local/share/man/man1/
+        state: directory
+
+    - name: Install Go yq man page
+      copy:
+        src:  '{{ tmpdir.path }}/yq.1'
+        dest: /usr/local/share/man/man1/
+        remote_src: true
+
+    - name: Remove temporary directory
+      file:
+        path:  '{{ tmpdir.path }}'
+        state: absent
+

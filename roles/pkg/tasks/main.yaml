@@ -38,3 +38,10 @@
   import_tasks:
     file: editor.yaml
 
+- name: Import yq tasks
+  tags:
+    - pkg
+    - yq
+  import_tasks:
+    file: yq.yaml
+

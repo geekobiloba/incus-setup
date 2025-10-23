@@ -5,10 +5,15 @@
     file: install.yaml
 
 - name: Import initialization tasks
+  when: false
   import_tasks:
     file: init.yaml
 
 - name: Import tuning tasks
   import_tasks:
     file: tuning.yaml
+
+- name: Import user tasks
+  import_tasks:
+    file: user.yaml
 

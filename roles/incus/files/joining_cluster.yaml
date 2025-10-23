@@ -1,0 +1,35 @@
+config: {}
+networks: []
+storage_pools: []
+storage_volumes: []
+profiles: []
+projects: []
+certificates: []
+cluster:
+  server_name: incus-test-1.home.lab
+  enabled: true
+  member_config:
+    - entity: storage-pool
+      name: local
+      key: source
+      value: /var/lib/incus/storage-pools/local
+      description: '"source" property for storage pool "local"'
+  cluster_address: 192.168.22.156:8443
+  cluster_certificate: |
+    -----BEGIN CERTIFICATE-----
+    MIICDzCCAZagAwIBAgIRANIbhREGDsTuSErT3vPk6JEwCgYIKoZIzj0EAwMwNzEZ
+    MBcGA1UEChMQTGludXggQ29udGFpbmVyczEaMBgGA1UEAwwRcm9vdEBpbmN1cy10
+    ZXN0LTAwHhcNMjUxMDA2MTcxMzU2WhcNMzUxMDA0MTcxMzU2WjA3MRkwFwYDVQQK
+    ExBMaW51eCBDb250YWluZXJzMRowGAYDVQQDDBFyb290QGluY3VzLXRlc3QtMDB2
+    MBAGByqGSM49AgEGBSuBBAAiA2IABN+a476MY2PJZb9k7Lddqe84KwfKhJowotrt
+    d2vdtXu7EBO1IO456KTcLiAaRUM9FDQ2qP5ykkj4fCXmxVrxgPDjk3jEX6fym+sK
+    gFVMjlevnRvVm59eQzKg9q8p9yHi3KNmMGQwDgYDVR0PAQH/BAQDAgWgMBMGA1Ud
+    JQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwLwYDVR0RBCgwJoIMaW5jdXMt
+    dGVzdC0whwR/AAABhxAAAAAAAAAAAAAAAAAAAAABMAoGCCqGSM49BAMDA2cAMGQC
+    MDr43IRVrW+3/H2tZbX8IgM3ws+naxBDdECuhUqp2C37sSOECuw3k4QZW3W4tOpR
+    KAIwDEPs6jDUE2n+H6tju98EgHn6Mu7xg5EtM//mw3voS+kGppi4/mciRSe8FiSl
+    EOrF
+    -----END CERTIFICATE-----
+  server_address: 192.168.22.159:8443
+  cluster_token: ""
+  cluster_certificate_path: ""
